@@ -67,7 +67,7 @@
                         <Insets bottom="10.0" left="10.0" right="10.0" />
                      </VBox.margin>
                   </PasswordField>
-                  <Button mnemonicParsing="false" onAction="#register" prefHeight="26.0" prefWidth="104.0" style="-fx-background-color: #4da3ff; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;" text="Registrarse" />
+                  <Button mnemonicParsing="false" onAction="#register" prefHeight="26.0" prefWidth="104.0" style="-fx-background-color: #4da3ff; -fx-text-fill: #0A0F1F; -fx-background-radius: 10; -fx-font-weight: bold;" text="Registrarse" />
                   <Hyperlink onAction="#goLogin" text="¿Ya tienes cuenta? Iniciar Sesion" textFill="#4da3ff">
                      <VBox.margin>
                         <Insets bottom="10.0" />

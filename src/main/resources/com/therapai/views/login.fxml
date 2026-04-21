@@ -50,7 +50,7 @@
                         <Insets bottom="7.0" left="10.0" top="7.0" />
                      </padding>
                   </PasswordField>
-                  <Button mnemonicParsing="false" onAction="#login" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: #4da3ff; -fx-text-fill: white; -fx-background-radius: 10; -fx-font-weight: bold;" text="Entrar" />
+                  <Button mnemonicParsing="false" onAction="#login" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: #4da3ff; -fx-text-fill: #0A0F1F; -fx-background-radius: 10; -fx-font-weight: bold;" text="Entrar" />
                   <Hyperlink onAction="#goRegister" text="Crear cuenta" textFill="#4da3ff">
                      <VBox.margin>
                         <Insets bottom="10.0" />
