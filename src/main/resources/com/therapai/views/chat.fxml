@@ -10,15 +10,15 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #111A2E;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.ChatController">
    <center>
       <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="270.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F; -fx-border-color: #111A2E;">
          <content>
-            <VBox fx:id="messagesBox" prefHeight="392.0" prefWidth="896.0" spacing="10.0" style="-fx-background-color: #0A0F1F;">
+            <VBox fx:id="messagesBox" prefHeight="369.0" prefWidth="856.0" spacing="10.0" style="-fx-background-color: #0A0F1F; -fx-background-radius: 0;">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
@@ -45,7 +45,7 @@
             <Region prefHeight="150.0" prefWidth="287.0" />
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goHistory" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goHistory" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/HistoryIcon.png" />
                      </image>
@@ -54,7 +54,7 @@
             </Button>
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goSettings" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goSettings" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/SettingsIcon.png" />
                      </image>
@@ -63,7 +63,7 @@
             </Button>
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goProfile" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goProfile" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/ProfileIcon.png" />
                      </image>
@@ -74,22 +74,27 @@
       </HBox>
    </top>
    <bottom>
-      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: #111A2E;" BorderPane.alignment="CENTER">
+      <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField fx:id="messageField" prefHeight="37.0" prefWidth="307.0" promptText="Escribe un mensaje..." style="-fx-background-color: #0A0F1F;" />
-            <Button mnemonicParsing="false" style="-fx-background-color: #0A0F1F; -fx-background-radius: 100;">
-               <graphic>
-                  <ImageView fitHeight="40.0" fitWidth="30.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/SendIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <HBox alignment="CENTER" prefHeight="126.0" prefWidth="900.0" spacing="10.0" style="-fx-background-color: #111A2E;">
+               <children>
+                  <TextField fx:id="messageField1" onAction="#sendMessage" prefHeight="37.0" prefWidth="454.0" promptText="Escribe un mensaje..." style="-fx-background-color: #0A0F1F;">
+                     <HBox.margin>
+                        <Insets right="15.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <Button mnemonicParsing="false" onAction="#sendMessage" style="-fx-background-color: #0A0F1F; -fx-background-radius: 20;">
+                     <graphic>
+                        <ImageView fitHeight="40.0" fitWidth="30.0" onMouseClicked="#sendMessage" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../images/SendIcon.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
          </children>
-         <padding>
-            <Insets top="15.0" />
-         </padding>
-      </HBox>
+      </StackPane>
    </bottom>
 </BorderPane>

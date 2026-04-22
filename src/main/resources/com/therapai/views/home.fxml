@@ -13,7 +13,6 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
 <BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.HomeController">
    <center>
       <AnchorPane prefHeight="400.0" prefWidth="600.0">
@@ -62,7 +61,7 @@
             <Region prefHeight="150.0" prefWidth="287.0" />
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goHistory" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goHistory" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/HistoryIcon.png" />
                      </image>
@@ -71,7 +70,7 @@
             </Button>
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goSettings" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goSettings" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/SettingsIcon.png" />
                      </image>
@@ -80,7 +79,7 @@
             </Button>
             <Button mnemonicParsing="false" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
-                  <ImageView fitHeight="60.0" fitWidth="60.0" onMouseClicked="#goProfile" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goProfile" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/ProfileIcon.png" />
                      </image>
