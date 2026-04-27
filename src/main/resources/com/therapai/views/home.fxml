@@ -35,7 +35,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <ListView onMouseClicked="#openChat" prefHeight="305.0" prefWidth="630.0" style="-fx-background-color: #111A2E; -fx-border-color: #4DA3FF; -fx-border-width: 1; -fx-border-radius: 7;">
+                  <ListView fx:id="chatList" onMouseClicked="#openChat" prefHeight="305.0" prefWidth="630.0" style="-fx-background-color: #111A2E; -fx-border-color: #4DA3FF; -fx-border-width: 1; -fx-border-radius: 7;">
                      <VBox.margin>
                         <Insets bottom="15.0" left="20.0" right="20.0" />
                      </VBox.margin>
