@@ -16,7 +16,7 @@
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #111A2E;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.ChatController">
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="270.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F; -fx-border-color: #111A2E;">
+      <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="270.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F; -fx-border-color: #111A2E;" vbarPolicy="NEVER">
          <content>
             <VBox fx:id="messagesBox" prefHeight="369.0" prefWidth="856.0" spacing="10.0" style="-fx-background-color: #0A0F1F; -fx-background-radius: 0;">
                <padding>
@@ -78,7 +78,7 @@
          <children>
             <HBox alignment="CENTER" prefHeight="126.0" prefWidth="900.0" spacing="10.0" style="-fx-background-color: #111A2E;">
                <children>
-                  <TextField fx:id="messageField1" onAction="#sendMessage" prefHeight="37.0" prefWidth="454.0" promptText="Escribe un mensaje..." style="-fx-background-color: #0A0F1F;">
+                  <TextField fx:id="messageField1" onAction="#sendMessage" prefHeight="37.0" prefWidth="454.0" promptText="Escribe un mensaje..." style="-fx-background-color: #0A0F1F; -fx-text-fill: #E6F0FF;">
                      <HBox.margin>
                         <Insets right="15.0" />
                      </HBox.margin>

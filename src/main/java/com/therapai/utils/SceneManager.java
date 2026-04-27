@@ -30,7 +30,7 @@ public class SceneManager {
     public void switchTo(String fxml){
         try{
             //La ruta hay que cambiarla.
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/home/aspa/IdeaProjects/therapai/src/main/java/org/example/views/" + fxml)));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/therapai/views/" + fxml)));
             Scene scene = new Scene(root);
             mainStage.setScene(scene);
             mainStage.show();
@@ -43,7 +43,7 @@ public class SceneManager {
     // para poder pasarle parametros entre pantallas despues pej cuando selecciona un chat para abrirlo.
     public <T> T switchToWithController(String fxml){
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/home/aspa/IdeaProjects/therapai/src/main/java/org/example/views/" + fxml));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/therapai/views/" + fxml));
             Parent root = loader.load();
             mainStage.setScene(new Scene(root));
             mainStage.show();
