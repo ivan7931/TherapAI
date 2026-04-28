@@ -144,7 +144,7 @@ public class ChatController {
         addMessageBox("Perfecto, funciona genial", false);
     }
 
-    //Efecto para mostrar mensajes en el chat poco a poco
+    //Efecto para mostrar mensajes en el chat poco a poco, solo es para los mensajes de la IA.
     private void addTypingMessage(String fullText) {
         HBox box = new HBox();
         box.setPadding(new Insets(5));
@@ -191,6 +191,7 @@ public class ChatController {
         timeline.play();
     }
 
+    //Metodo que se ejecuta al iniciar la pantalla del controller, es decir la de Chat en este caso.
     @FXML
     public void initialize() {
         //Hace que el autoScroll funcione correctamente, detecta cada vez que el VBox cambia de altura y baja el scroll del todo.
@@ -198,7 +199,7 @@ public class ChatController {
             Platform.runLater(() -> scrollPane.setVvalue(1.0));
         });
 
-        //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens
+        //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
         chatService = new ChatService(new IAServer("AIzaSyAiCXmfgyJz0ujR4UoZBR0kMNitmmrS5Mo"));
 
         testUI();
