@@ -1,6 +1,10 @@
 package com.therapai.controllers;
 
+import com.therapai.servicies.ChatService;
+import com.therapai.servicies.IAServer;
 import com.therapai.utils.SceneManager;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -9,7 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
+import javafx.util.Duration;
 
 public class ChatController {
     //El @FXML debe llevarlo todo metodo o atributo que venga del fxml para que JavaFx lo detecte y los pueda conectar
@@ -24,6 +33,9 @@ public class ChatController {
 
     //Atributo para saber en que chat estamos.
     private String chatId;
+
+    //Intermediario para mandar mensajes a la IA
+    private ChatService chatService;
 
     @FXML
     public void goHome() {
@@ -49,10 +61,22 @@ public class ChatController {
     public void sendMessage() {
         String message = messageField1.getText().trim();
         if (message.isEmpty()) return;
+
+        //Se muestra el mensaje del usuario en el chat
         addMessageBox(message, true);
         messageField1.clear();
-        saveMessage(message, "user");
-        //Falta comprobar que no sea sensitive y llamar a la IA
+
+        //Se llama a Gemini
+        String aiResponse = chatService.sendMessageToAI(message);
+        System.out.println("Respuesta de la IA : " + aiResponse);
+        aiResponse = aiResponse.replace("\n", System.lineSeparator());
+
+
+        //Se muestra la respuesta de la IA
+        addTypingMessage(aiResponse);
+
+        //saveMessage(message, "user");
+        //Falta comprobar que no sea sensitive
     }
 
     //Metodo para crear la caja donde se mostrara el mensaje en el chat.
@@ -63,7 +87,8 @@ public class ChatController {
 
         Label label = new Label(message);
         label.setWrapText(true);
-        label.setMaxWidth(400);
+        label.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(label, Priority.ALWAYS);
         label.setPadding(new Insets(10));
         label.setStyle("-fx-background-radius: 10;");
 
@@ -80,13 +105,6 @@ public class ChatController {
         Platform.runLater(() -> {
             messagesBox.getChildren().add(box);
         });
-    }
-
-    private void callGemini(String userMessage) {
-        String aiResponse = "Prueba";
-
-        addMessageBox(aiResponse, false);
-        saveMessage(aiResponse, "bot");
     }
 
     //Metodo para cargar el chat
@@ -118,12 +136,54 @@ public class ChatController {
         addMessageBox("Perfecto, funciona genial", false);
     }
 
+    //Efecto para mostrar mensajes en el chat poco a poco
+    private void addTypingMessage(String fullText) {
+        HBox box = new HBox();
+        box.setPadding(new Insets(5));
+        box.setSpacing(5);
+        box.setAlignment(Pos.CENTER_LEFT);
+
+        TextFlow textFlow = new TextFlow();
+        textFlow.setMaxWidth(600);
+        textFlow.setPadding(new Insets(10));
+        textFlow.setStyle("-fx-background-radius: 10; -fx-background-color: #1E293B;");
+        textFlow.setLineSpacing(3);
+
+        // Permitir que crezca verticalmente sin cortar
+        HBox.setHgrow(textFlow, Priority.ALWAYS);
+
+        box.getChildren().add(textFlow);
+
+        Platform.runLater(() -> messagesBox.getChildren().add(box));
+
+        final int[] index = {0};
+
+        Timeline timeline = new Timeline(
+                new KeyFrame(Duration.millis(20), e -> {
+                    if (index[0] < fullText.length()) {
+                        char c = fullText.charAt(index[0]);
+                        Text t = new Text(String.valueOf(c));
+                        t.setFill(Color.web("#E6F0FF"));
+                        t.setStyle("-fx-font-size: 14px;");
+                        textFlow.getChildren().add(t);
+                        index[0]++;
+                    }
+                })
+        );
+
+        timeline.setCycleCount(fullText.length());
+        timeline.play();
+    }
+
     @FXML
     public void initialize() {
         //Hace que el autoScroll funcione correctamente, detecta cada vez que el VBox cambia de altura y baja el scroll del todo.
         messagesBox.heightProperty().addListener((obs, oldVal, newVal) -> {
             Platform.runLater(() -> scrollPane.setVvalue(1.0));
         });
+
+        //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens
+        chatService = new ChatService(new IAServer("AIzaSyAiCXmfgyJz0ujR4UoZBR0kMNitmmrS5Mo"));
 
         testUI();
     }
