@@ -84,27 +84,35 @@ public class ChatController {
         HBox box = new HBox();
         box.setPadding(new Insets(5));
         box.setSpacing(5);
+        box.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(box, Priority.ALWAYS);
 
-        Label label = new Label(message);
-        label.setWrapText(true);
-        label.setMaxWidth(Double.MAX_VALUE);
-        HBox.setHgrow(label, Priority.ALWAYS);
-        label.setPadding(new Insets(10));
-        label.setStyle("-fx-background-radius: 10;");
+        TextFlow bubble = new TextFlow();
+        bubble.setPadding(new Insets(10));
+        bubble.setLineSpacing(3);
+        bubble.setStyle("-fx-background-radius: 10;");
 
-        if (isUser) { //Si es del user el mensaje a la derecha
+        if (isUser) {
             box.setAlignment(Pos.CENTER_RIGHT);
-            label.setStyle(label.getStyle() + "-fx-background-color: #3A6FF7; -fx-text-fill: white;");
-        } else { //Si es de la IA a la izquierda
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #3A6FF7;");
+        } else {
             box.setAlignment(Pos.CENTER_LEFT);
-            label.setStyle(label.getStyle() + "-fx-background-color: #1E293B; -fx-text-fill: #E6F0FF;");
+            bubble.setStyle(bubble.getStyle() + "-fx-background-color: #1E293B;");
         }
 
-        box.getChildren().add(label);
+        Text text = new Text(message);
+        text.setFill(isUser ? Color.WHITE : Color.web("#E6F0FF"));
+        text.setStyle("-fx-font-size:14px;");
 
-        Platform.runLater(() -> {
-            messagesBox.getChildren().add(box);
-        });
+        bubble.getChildren().add(text);
+
+        bubble.maxWidthProperty().bind(messagesBox.widthProperty().multiply(0.60));
+        bubble.prefWidthProperty().bind(messagesBox.widthProperty().multiply(0.60));
+        text.wrappingWidthProperty().bind(bubble.widthProperty().subtract(10));
+
+        box.getChildren().add(bubble);
+
+        Platform.runLater(() -> messagesBox.getChildren().add(box));
     }
 
     //Metodo para cargar el chat
@@ -141,35 +149,43 @@ public class ChatController {
         HBox box = new HBox();
         box.setPadding(new Insets(5));
         box.setSpacing(5);
+        box.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(box, Priority.ALWAYS);
         box.setAlignment(Pos.CENTER_LEFT);
 
-        TextFlow textFlow = new TextFlow();
-        textFlow.setMaxWidth(600);
-        textFlow.setPadding(new Insets(10));
-        textFlow.setStyle("-fx-background-radius: 10; -fx-background-color: #1E293B;");
-        textFlow.setLineSpacing(3);
+        TextFlow bubble = new TextFlow();
+        bubble.setPadding(new Insets(10));
+        bubble.setLineSpacing(3);
+        bubble.setStyle("-fx-background-color:#1E293B; -fx-background-radius:10;");
 
-        // Permitir que crezca verticalmente sin cortar
-        HBox.setHgrow(textFlow, Priority.ALWAYS);
+        bubble.maxWidthProperty().bind(messagesBox.widthProperty().multiply(0.60));
+        bubble.prefWidthProperty().bind(messagesBox.widthProperty().multiply(0.60));
 
-        box.getChildren().add(textFlow);
+        Text text = new Text("");
+        text.setFill(Color.web("#E6F0FF"));
+        text.setStyle("-fx-font-size:14px;");
+        text.wrappingWidthProperty().bind(bubble.widthProperty().subtract(10));
 
-        Platform.runLater(() -> messagesBox.getChildren().add(box));
+        bubble.getChildren().add(text);
+        box.getChildren().add(bubble);
+
+        Platform.runLater(() -> {
+            messagesBox.getChildren().add(box);
+            scrollPane.layout();
+            scrollPane.setVvalue(1.0);
+        });
 
         final int[] index = {0};
 
-        Timeline timeline = new Timeline(
-                new KeyFrame(Duration.millis(20), e -> {
-                    if (index[0] < fullText.length()) {
-                        char c = fullText.charAt(index[0]);
-                        Text t = new Text(String.valueOf(c));
-                        t.setFill(Color.web("#E6F0FF"));
-                        t.setStyle("-fx-font-size: 14px;");
-                        textFlow.getChildren().add(t);
-                        index[0]++;
-                    }
-                })
-        );
+        Timeline timeline = new Timeline(new KeyFrame(Duration.millis(20), e -> {
+            if (index[0] < fullText.length()) {
+                text.setText(text.getText() + fullText.charAt(index[0]));
+                index[0]++;
+                bubble.requestLayout();
+                box.requestLayout();
+                Platform.runLater(() -> scrollPane.setVvalue(1.0));
+            }
+        }));
 
         timeline.setCycleCount(fullText.length());
         timeline.play();

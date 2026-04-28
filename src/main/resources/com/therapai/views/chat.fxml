@@ -18,7 +18,7 @@
    <center>
       <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" prefHeight="270.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F; -fx-border-color: #111A2E;" vbarPolicy="NEVER">
          <content>
-            <VBox fx:id="messagesBox" prefHeight="369.0" prefWidth="856.0" spacing="10.0" style="-fx-background-color: #0A0F1F; -fx-background-radius: 0;">
+            <VBox fx:id="messagesBox" fillWidth="true" spacing="10.0" style="-fx-background-color: #0A0F1F; -fx-background-radius: 0;">
                <padding>
                   <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                </padding>
