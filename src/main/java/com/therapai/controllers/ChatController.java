@@ -139,7 +139,7 @@ public class ChatController {
     //Metodo para probar quer funciona correctamente
     public void testUI() {
         addMessageBox("Hola, soy un mensaje del usuario", true);
-        addMessageBox("Hola, soy un mensaje del bot", false);
+        addMessageBox("Hola, soy un mensaje del bot aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false);
         addMessageBox("Este es un mensaje largo para comprobar que el wrap funciona correctamente y que la burbuja se adapta al tamaño del texto sin romper el diseño.", true);
         addMessageBox("Perfecto, funciona genial", false);
     }

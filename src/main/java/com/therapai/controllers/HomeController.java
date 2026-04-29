@@ -19,7 +19,14 @@ public class HomeController {
     //Metodo para abrir la conversacion que selecciono de la lista.
     @FXML
     public void openChat() {
-        String chatId = chatList.getSelectionModel().getSelectedItem().getChatId();
+        ConversationModel selected = chatList.getSelectionModel().getSelectedItem();
+
+        if (selected == null) {
+            System.out.println("⚠ No hay chat seleccionado");
+            return;
+        }
+
+        String chatId = selected.getChatId();
 
         //Con el getInstance se obtiene el SceneManager que es general para toda la app,
         // el metodo switchToWithController nos cambia a la pantalla que pasamos y nos devuelve el controller de esa scene y
