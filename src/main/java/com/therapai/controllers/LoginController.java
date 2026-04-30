@@ -13,6 +13,10 @@ public class LoginController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
+    @FXML
+    public void goHome() {
+        SceneManager.getInstance().switchTo("home.fxml");
+    }
     private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
     @FXML
     public void login() {
@@ -45,31 +49,106 @@ public class LoginController {
         RequestBody body = RequestBody.create(MediaType.parse("application/json"), json.toString());
         //Contruimos la peticion http. Definimos url destin, metodo post y datos a enviar
         Request request = new Request.Builder().url(url_login).post(body).build();
-        //Enciamos la peticion de manera asincrona , para ejecutar en segundo plano y sin bloquear app
+        //Enviamos la peticion para ejecutar en segundo plano y sin bloquear app-->Cliente.newCall(request)=crea peticion
+        //.enqueue()=ejecuta en seguno plano
+        //callback maneja exito error, interfaz de OkHttp
+        //creamos una clase anonima que implementa la interfaz Callback
+        //.enqueue--> necesita obligatoriamente Callback para saber que hacer si falla conexion(onFailure) y que hacer si responde(onResponse)
         cliente.newCall(request).enqueue(new Callback() {
+            /*
+             * Metodos de la interfaz Callback onFailure, onResponse()
+             * */
 
+            /***
+             *
+             * Si conxecion falla --> informa en el campo email
+             * Platfor.runlater vuelve al hilo principal(JAVAFX SOLO PERMITE MODFICAR LA UI DESDE HILO PRINCIPAL)
+             * Si conexion falla--> reset email/password y mensaje en email
+             */
+            //Se usan funciones lambda para tener que escribir:
+            /*
+            public void onFailure(Call call, IOException e) {
+            Platform.runLater(new Runnable() {
+               @Override
+                public void run() {
+                    emailField.setText("Error de conexión");
+                }
+              });
+            }
+
+             */
             @Override
             public void onFailure(Call call, IOException e) {
-                javafx.application.Platform.runLater(() ->
-                        emailField.setText("Error de conexión")
+                javafx.application.Platform.runLater(() -> {
+                            emailField.setText("Error de conexión");
+                            passwordField.setText("");
+                        }
                 );
             }
+
+            /***
+             * El servidor responde ok
+             * Devuelve json con respuesta del servidor Firebase si login correcto || login falla
+             * @param call
+             * @param response
+             * @throws IOException
+             */
+            //Se usan lambdas para evitar:
+            /*
+            public void onResponse(Call call, Response response) throws IOException {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (response.isSuccessful()) {
+                         System.out.println("LOGIN OK: " + res);
+                        } else {
+                            emailField.setText("usuario/contraseña incorrecto");
+                            passwordField.setText("");
+                            }
+                        }
+                    });
+            }
+
+            */
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
+                //Leemos la respuesta http con el objeto Json y lo convertimos en String. Solo
+                //se puede llamar una vez porque consume el stream interno
                 String res = response.body().string();
-
+                System.out.println("JSON RECIBIDO: " + res);
+                //volvemos al hilo principal para cambios en la UI
                 javafx.application.Platform.runLater(() -> {
+                    try {
+                        /*Codigo para simular login correcto. Volver a comentar hasta donde se indica
+                        para volver al login
+                         */
+                        /*String testJSON = "{\"email\": \"test@gmail.com\", \"idToken\": \"fake_token_123\" }";
+                        JSONObject jsonObject = new JSONObject(testJSON);
+                        String email = jsonObject.getString("email");
+                        String idToken = jsonObject.getString("idToken");
+                        goHome();*/
+                        /*Comentar hasta aqui. y lo de abajo hasta el catch cuando se descomente esa parte*/
+                        //Convertimos el string en un objeto Json
 
-                    if (response.isSuccessful()) {
-                        //errorLabel.setText("Login correcto ✔");
+                        JSONObject obj = new JSONObject(res);
+                        //Si login succesful->guardamos email , idtoken(autenticar usuario)
+                        //cambiamos de escena y vamos a home
+                        if (response.isSuccessful()) {
+                            String email = obj.getString("email");
+                            String id = obj.getString("idToken");
+                            System.out.println("LOGIN OK: " + res);
+                            goHome();
 
-                        // aquí luego cambias a Home.fxml
-                        System.out.println("LOGIN OK: " + res);
-
-                    } else {
-                        emailField.setText("usuario/contraseña incorrecto");
-                        passwordField.setText("");
+                        } else {//login -> failure
+                            //Recuperamos el motivo de error
+                            JSONObject error = obj.getJSONObject("error");
+                            //lo convertimos a string
+                            String mensaje_error = error.getString("message");
+                            emailField.setText(mensaje_error);
+                            passwordField.setText("");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
             }
