@@ -10,7 +10,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage){
         SceneManager.getInstance().setMainStage(primaryStage);
-        SceneManager.getInstance().switchTo("login.fxml");
+        SceneManager.getInstance().switchTo("register.fxml");
     }
     public static void main(String[] args) {
         launch(args);
