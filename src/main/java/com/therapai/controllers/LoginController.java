@@ -1,6 +1,8 @@
 package com.therapai.controllers;
 
+import com.therapai.models.UserModel;
 import com.therapai.utils.SceneManager;
+import com.therapai.utils.Sesion;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import okhttp3.*;
@@ -135,9 +137,11 @@ public class LoginController {
                         //cambiamos de escena y vamos a home
                         if (response.isSuccessful()) {
                             String email = obj.getString("email");
-                            String id = obj.getString("idToken");
+                            String id = obj.getString("localId");
                             System.out.println("LOGIN OK: " + res);
+                            System.out.println(Sesion.getUserId());
                             goHome();
+
 
                         } else {//login -> failure
                             //Recuperamos el motivo de error

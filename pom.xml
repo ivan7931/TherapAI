@@ -42,6 +42,12 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
+        <!-- Dependencia para la persistencia de datos en firestore-->
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>9.2.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

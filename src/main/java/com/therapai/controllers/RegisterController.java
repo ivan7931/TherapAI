@@ -1,7 +1,10 @@
 package com.therapai.controllers;
 
+import com.google.cloud.firestore.Firestore;
 import com.therapai.models.UserModel;
+import com.therapai.servicies.FirebaseService;
 import com.therapai.utils.SceneManager;
+import com.therapai.utils.Sesion;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
@@ -10,6 +13,8 @@ import okhttp3.*;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RegisterController {
@@ -114,6 +119,19 @@ public class RegisterController {
                            String emailRespuesta = objRespuesta.getString("email");
                            System.out.println("registro correcto->"+res);
                            UserModel userOK = new UserModel(uid, emailRespuesta,name);
+                           //Obtenemos la instancia de Firestore
+                           Firestore db = FirebaseService.getDb();
+                           //Hemos optado por usar un map como que represente el documento
+                           //en firestore. nombre-email = documento para la coleccion de users
+                           Map<String,Object> userPersist = new HashMap<>();
+                           //almacenamos los datos del usuario en el documento
+                           userPersist.put("name",name);
+                           userPersist.put("email",emailRespuesta);
+                           //Persistimos el documento(nombre-email) en firestore en la coleccion users
+                           //el documento se identifica por el localid del usuario (unuico para cada usuario)
+                           db.collection("users").document(uid).set(userPersist);
+                           //Guardamos la informacion de la sesion actual y cambiamos a home
+                           Sesion.setUsuario_actual(userOK);
                            goHome();
                        }
                        else {
