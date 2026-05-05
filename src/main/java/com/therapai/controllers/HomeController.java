@@ -1,16 +1,85 @@
 package com.therapai.controllers;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.Query;
+import com.google.cloud.firestore.QuerySnapshot;
 import com.therapai.models.ConversationModel;
+import com.therapai.servicies.FirebaseService;
 import com.therapai.utils.SceneManager;
+import com.therapai.utils.Sesion;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeController {
+    //lista de chats del usuario logeado
     @FXML
     private ListView<ConversationModel> chatList;
 
+    /***
+     * Metodo para recuperar la  lsita de cahts del usuario de firestore
+     */
+    public void cargarChats(){
+        //Obtenemos instancia de firestore
+        Firestore db = FirebaseService.getDb();
+        //recuperamos localid del usuario actual
+        String userId = Sesion.getUserId();
+        //Accedemos a la coleccion chats del usuario
+        /*db.collection("users")
+                .document(userId)
+                .collection("chats")
+                //ordenamos por fecha de creacion
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                //Recuperamos los datos
+                .get()
+                //Guardamos de manera asincrona para no bloquear la UI con la funcion lambda
+                .addOnSuccesListener(querySnapshot ->{});*/
+        //Accedemos a la coleccion de chats del usuario de la manera indicada para admin sdk
+        ApiFuture<QuerySnapshot> future = db.collection("users")
+                .document(userId)
+                .collection("chats")
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get();
+        //recuperamos los datos de manera asincrona y en segundo plano para no bloquear la ui
+        new Thread(()->{
+            try {
+                QuerySnapshot querySnapshot = future.get();
+
+                //Lista donde guardamos los chats
+                List<ConversationModel> chats = new ArrayList<>();
+
+                //Recorremos cada documento que se encuentra en la coleccion chats(un documento = un chat)
+                for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                    //Hacemos la conversion de objeto Firestore a java
+                    String chatId = documentSnapshot.getId();
+                    String titulo = documentSnapshot.getString("title");
+                    Long cratedAt = documentSnapshot.getLong("createdAt");
+                    //Si titulo == null-> nombre por defecto = Chat sin titulo
+                    if (titulo==null){
+                        titulo = "Chat sin titulo";
+                    }
+
+                    //Creamos el modelo de chat con los datos recuperados de firestores y los añadimos a la lista
+                    chats.add(new ConversationModel(chatId,userId,cratedAt,titulo));
+                }
+                Platform.runLater(()->{
+                    chatList.getItems().setAll(chats);
+                });
+            }
+            //capturamos error
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }).start();
+
+
+    }
     @FXML
     public void newChat() {
         SceneManager.getInstance().switchTo("chat.fxml");
@@ -34,6 +103,15 @@ public class HomeController {
         ChatController chatController = SceneManager.getInstance().switchToWithController("chat.fxml");
 
         chatController.loadChat(chatId);
+    }
+
+    /***
+     * Metodo para cargar la lisa de chats del usuario cuando se carga la pantalla home.fxml
+     */
+    @FXML
+    public void initialize() {
+        System.out.println("HomeController initialized");
+        cargarChats();
     }
 
     //Los metodos go son para cambiar a esa pantalla.
