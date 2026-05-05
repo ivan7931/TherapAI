@@ -64,33 +64,37 @@ public class ChatController {
         SceneManager.getInstance().switchTo("profile.fxml");
     }
 
+    /***
+     * Enviar mensaje y obtener respuesta de la IA
+     */
     @FXML
     public void sendMessage() {
+        //recuperamos el texto que ha escrito el usuario -> si vacio nada
         String message = messageField1.getText().trim();
         if (message.isEmpty()) return;
 
-        //Si es una nueva conversacion creamos el chat
+        //Si es la primera vez que se envia un mensaje -> creamos nuevo chat en firestore
         crearChat();
 
-        //Se muestra el mensaje del usuario en el chat
+        //Se muestra el mensaje del usuario en la UI
         addMessageBox(message, true);
-        //guardamos el mensaje
+        //guardamos el mensaje que envia el usuario en firestore
         saveMessage(message,"user");
         //limpiamos campos
         messageField1.clear();
 
-        //Se llama a Gemini
+        //Se llama a la api de gemini para obtener respuestas
         String aiResponse = chatService.sendMessageToAI(message);
         System.out.println("Respuesta de la IA : " + aiResponse);
         aiResponse = aiResponse.replace("\n", System.lineSeparator());
 
-        //Si la IA no devuelve respuesta
+        //Si IA no responde-> mosntramos mensaje infomrando al usuario en la UI Y guardamos ese mensaje en firestore tambien
         if(aiResponse==null || aiResponse.contains("Error") || aiResponse.contains("ERROR") ||aiResponse.contains("error")){
             addTypingMessage(aiResponse);
             saveMessage("servicio de IA no disponible", "IA");
             return;
         }
-        //Se muestra la respuesta de la IA
+        //Hay respuesta de la IA , guardamos mensaje
         addTypingMessage(aiResponse);
         saveMessage(aiResponse, "IA");
         //Falta comprobar que no sea sensitive
@@ -143,12 +147,17 @@ public class ChatController {
 
     }
 
+    /***
+     * guardar mensajes en firestore
+     * @param message
+     * @param sender
+     */
     private void saveMessage(String message, String sender) {
         //guardamos en la variable bd la instancia de la base de datos
         Firestore db = FirebaseService.getDb();
-        //guradamos el localid del usuario
+        //guradamos el localid del usuario actual
         String uid = Sesion.getUserId();
-        //Creamos como estructura de datos un Mao para guardar el mensaje, quien lo envia y la fecha en que se envia
+        //Creamos como estructura de datos un Mao para guardar el mensaje, quien lo envia y la fecha en que se envia(representacion del mensaje)
         Map<String, Object> msg = new HashMap<>();
         msg.put("text", message);
         msg.put("sender", sender);
@@ -166,18 +175,22 @@ public class ChatController {
     }
 
     /***
-     * metodo para generar y asignar un chatId si la conversacion es nueva y guardar los mensajes
+     * metodo para crear un nuvo chat en firestore si no existe chatID
      */
     private void crearChat(){
+        //Si existe chat -> nada
         if(chatId != null) return;
-        Firestore db = FirebaseService.getDb();
-        String uid = Sesion.getUserId();
+        Firestore db = FirebaseService.getDb();//instancia db
+        String uid = Sesion.getUserId();//localid user actual
 
+        //Creamos un documento vacio dentro de chats--> sirve para generar automaticamente el chatID para el nuevo chat
         DocumentReference doc = db.collection("users").document(uid).collection("chats").document();
-        chatId = doc.getId();
+        chatId = doc.getId();//asiganmos el id generado al caht actual
+        //informacion del nuevo chat
         Map<String, Object> chat  = new HashMap<>();
         chat.put("title", "Nueva conversacion");
         chat.put("createdAt", System.currentTimeMillis());
+        //persistimo la informacion en firestore
         doc.set(chat);
     }
 
