@@ -13,7 +13,7 @@ public class HomeController {
 
     @FXML
     public void newChat() {
-
+        SceneManager.getInstance().switchTo("chat.fxml");
     }
 
     //Metodo para abrir la conversacion que selecciono de la lista.

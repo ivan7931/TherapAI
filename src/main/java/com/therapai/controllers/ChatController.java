@@ -1,8 +1,12 @@
 package com.therapai.controllers;
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
 import com.therapai.servicies.ChatService;
+import com.therapai.servicies.FirebaseService;
 import com.therapai.servicies.IAServer;
 import com.therapai.utils.SceneManager;
+import com.therapai.utils.Sesion;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -19,6 +23,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ChatController {
     //El @FXML debe llevarlo todo metodo o atributo que venga del fxml para que JavaFx lo detecte y los pueda conectar
@@ -62,8 +69,14 @@ public class ChatController {
         String message = messageField1.getText().trim();
         if (message.isEmpty()) return;
 
+        //Si es una nueva conversacion creamos el chat
+        crearChat();
+
         //Se muestra el mensaje del usuario en el chat
         addMessageBox(message, true);
+        //guardamos el mensaje
+        saveMessage(message,"user");
+        //limpiamos campos
         messageField1.clear();
 
         //Se llama a Gemini
@@ -71,11 +84,15 @@ public class ChatController {
         System.out.println("Respuesta de la IA : " + aiResponse);
         aiResponse = aiResponse.replace("\n", System.lineSeparator());
 
-
+        //Si la IA no devuelve respuesta
+        if(aiResponse==null || aiResponse.contains("Error") || aiResponse.contains("ERROR") ||aiResponse.contains("error")){
+            addTypingMessage(aiResponse);
+            saveMessage("servicio de IA no disponible", "IA");
+            return;
+        }
         //Se muestra la respuesta de la IA
         addTypingMessage(aiResponse);
-
-        //saveMessage(message, "user");
+        saveMessage(aiResponse, "IA");
         //Falta comprobar que no sea sensitive
     }
 
@@ -127,7 +144,41 @@ public class ChatController {
     }
 
     private void saveMessage(String message, String sender) {
+        //guardamos en la variable bd la instancia de la base de datos
+        Firestore db = FirebaseService.getDb();
+        //guradamos el localid del usuario
+        String uid = Sesion.getUserId();
+        //Creamos como estructura de datos un Mao para guardar el mensaje, quien lo envia y la fecha en que se envia
+        Map<String, Object> msg = new HashMap<>();
+        msg.put("text", message);
+        msg.put("sender", sender);
+        msg.put("timestamp", System.currentTimeMillis());
+        //Persistimos en la base de datos de firestore el map que va a contener toda la informacion del mensaje
+        //a la coleccion users -> la instancia que tenga document (id) -> en la coleccion chats -> que tenga document = chatId
+        //-> en la coleccion messages, persistimos el mensaje
+        db.collection("users")
+                .document(uid)
+                .collection("chats")
+                .document(chatId)
+                .collection("messages")
+                .add(msg);
 
+    }
+
+    /***
+     * metodo para generar y asignar un chatId si la conversacion es nueva y guardar los mensajes
+     */
+    private void crearChat(){
+        if(chatId != null) return;
+        Firestore db = FirebaseService.getDb();
+        String uid = Sesion.getUserId();
+
+        DocumentReference doc = db.collection("users").document(uid).collection("chats").document();
+        chatId = doc.getId();
+        Map<String, Object> chat  = new HashMap<>();
+        chat.put("title", "Nueva conversacion");
+        chat.put("createdAt", System.currentTimeMillis());
+        doc.set(chat);
     }
 
     //Este metodo serviria para controlar los mensajes si contienen algo que no deben o podemos hacerlo diciendoselo a la IA que lo controle,
@@ -202,6 +253,6 @@ public class ChatController {
         //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
         chatService = new ChatService(new IAServer("AIzaSyAiCXmfgyJz0ujR4UoZBR0kMNitmmrS5Mo"));
 
-        testUI();
+        //testUI();
     }
 }

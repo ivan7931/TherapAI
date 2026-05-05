@@ -139,6 +139,8 @@ public class LoginController {
                             String email = obj.getString("email");
                             String id = obj.getString("localId");
                             System.out.println("LOGIN OK: " + res);
+                            UserModel currentUser = new UserModel(id,email,null);
+                            Sesion.setUsuario_actual(currentUser);
                             System.out.println(Sesion.getUserId());
                             goHome();
 
