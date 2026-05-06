@@ -7,6 +7,7 @@ import com.therapai.utils.SceneManager;
 import com.therapai.utils.Sesion;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import okhttp3.*;
@@ -28,6 +29,7 @@ public class RegisterController {
     @FXML private TextField registerEmail;
     @FXML private PasswordField registerPassword;
     @FXML private PasswordField registerConfirmPass;
+    @FXML private Button confirmButton;
 
     /***
      * funcion para cambiar a home si registro correcto
@@ -162,6 +164,10 @@ public class RegisterController {
 
     }
 
+    @FXML
+    public void initialize() {
+        confirmButton.setDefaultButton(true);
+    }
     @FXML
     public void goLogin(){
         SceneManager.getInstance().switchTo("login.fxml");
