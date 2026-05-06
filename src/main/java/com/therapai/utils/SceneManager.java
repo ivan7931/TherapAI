@@ -33,6 +33,7 @@ public class SceneManager {
             Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/com/therapai/views/" + fxml)));
             Scene scene = new Scene(root);
             mainStage.setScene(scene);
+            mainStage.centerOnScreen();
             mainStage.show();
         } catch (IOException e) {
             throw new RuntimeException(e); //Hay que cambiarla por una personalizada.
