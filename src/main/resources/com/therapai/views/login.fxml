@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.LoginController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.LoginController">
    <children>
       <VBox alignment="CENTER" layoutX="300.0" layoutY="200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" prefHeight="200.0" prefWidth="250.0" spacing="15.0">
          <children>
@@ -34,7 +34,7 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <TextField promptText="Email" style="-fx-background-color: #1A233A; -fx-text-fill: #E6F0FF; -fx-background-radius: 5; -fx-prompt-text-fill: #7A8AA6;">
+                  <TextField fx:id="emailField" promptText="Email" style="-fx-background-color: #1A233A; -fx-text-fill: #E6F0FF; -fx-background-radius: 5; -fx-prompt-text-fill: #7A8AA6;">
                      <VBox.margin>
                         <Insets bottom="5.0" left="10.0" right="10.0" />
                      </VBox.margin>
@@ -42,7 +42,7 @@
                         <Insets bottom="7.0" left="10.0" top="7.0" />
                      </padding>
                   </TextField>
-                  <PasswordField promptText="Password" style="-fx-background-color: #1A233A; -fx-text-fill: #E6F0FF; -fx-background-radius: 5; -fx-prompt-text-fill: #7A8AA6;">
+                  <PasswordField fx:id="passwordField" promptText="Password" style="-fx-background-color: #1A233A; -fx-text-fill: #E6F0FF; -fx-background-radius: 5; -fx-prompt-text-fill: #7A8AA6;">
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" />
                      </VBox.margin>
@@ -50,7 +50,7 @@
                         <Insets bottom="7.0" left="10.0" top="7.0" />
                      </padding>
                   </PasswordField>
-                  <Button mnemonicParsing="false" onAction="#login" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: #4da3ff; -fx-text-fill: #0A0F1F; -fx-background-radius: 10; -fx-font-weight: bold;" text="Entrar" />
+                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#login" prefHeight="54.0" prefWidth="71.0" style="-fx-background-color: #4da3ff; -fx-text-fill: #0A0F1F; -fx-background-radius: 10; -fx-font-weight: bold;" text="Entrar" />
                   <Hyperlink onAction="#goRegister" text="Crear cuenta" textFill="#4da3ff">
                      <VBox.margin>
                         <Insets bottom="10.0" />

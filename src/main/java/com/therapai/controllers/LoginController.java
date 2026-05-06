@@ -10,10 +10,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+
 public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
+    //Codigo para que detecte el enter en el login y no hacer clcik para registrarse
+    @FXML private Button loginButton;
 
     @FXML
     public void goHome() {
@@ -164,7 +167,10 @@ public class LoginController {
 
 
     }
-
+    @FXML
+    public void initialize(){
+        loginButton.setDefaultButton(true);
+    }
     @FXML
     public void goRegister() {
         SceneManager.getInstance().switchTo("register.fxml");
