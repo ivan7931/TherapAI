@@ -1,7 +1,7 @@
 package com.therapai.controllers;
 
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
 import com.therapai.servicies.ChatService;
 import com.therapai.servicies.FirebaseService;
 import com.therapai.servicies.IAServer;
@@ -144,6 +144,58 @@ public class ChatController {
 
     //Metodo para cargar los mensajes de la conversacion desde la bdd.
     private void loadMessages() {
+        System.out.println("cargando mensajes ....");
+        //Instancia de la base de datos
+        Firestore db = FirebaseService.getDb();
+        //Recueramos el localId del usuario actual
+        String uid = Sesion.getUserId();
+        System.out.println("id del chat->"+chatId);
+        System.out.println("id del user->"+uid);
+        //Referenciamos la coleccion mensajes de la base de datos de FireStore del chat actual
+        //para ello tenemos que llegas a la coleccion de mensajes de la siguiente manera :
+        ApiFuture<QuerySnapshot> future = db.collection("users")
+                .document(uid)
+                .collection("chats")
+                .document(chatId)
+                .collection("messages")
+                //ordenamos los mensajes del mas antigui al mas reciente
+                .orderBy("timestamp", Query.Direction.ASCENDING)
+                //recuperamos la coeccion
+                .get();
+        //Ejecutamos un hilo en segundo plano para no bloquear javafx
+        new Thread(() -> {
+            try{
+                //Obtenemos los resultados
+                QuerySnapshot snapshot = future.get();
+
+                //Limpiamos la pantalla de chats antes de cargar los mensajes para evitar que ya hubiera mensajes previos
+                Platform.runLater(() -> {
+                    messagesBox.getChildren().clear();
+                });
+                //Recorremos cada mensaje
+                for(QueryDocumentSnapshot doc : snapshot.getDocuments()) {
+                    //Extraemos los datos del mensaje
+                    String texto = doc.getString("text");
+                    String sender = doc.getString("sender");
+                    //Comprobacion para saber si es usuario o IA
+                    boolean es_usuario;
+                    if(sender.equalsIgnoreCase("user")){
+                        es_usuario=true;
+                    }
+                    else{
+                        es_usuario=false;
+                    }
+                    //Escribimos el contenido del mensaje recuperado en la base de datos Firestore, en segundo plano para no bloquear la ui
+                    Platform.runLater(() -> {
+                        System.out.println("llego hasta aqui");
+                        addMessageBox(texto,es_usuario);
+                    });
+                }
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        }).start();
 
     }
 

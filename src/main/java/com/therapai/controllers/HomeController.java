@@ -66,7 +66,7 @@ public class HomeController {
                     }
 
                     //Creamos el modelo de chat con los datos recuperados de firestores y los añadimos a la lista
-                    chats.add(new ConversationModel(chatId,userId,cratedAt,titulo));
+                    chats.add(new ConversationModel(userId,chatId,cratedAt,titulo));
                 }
                 Platform.runLater(()->{
                     chatList.getItems().setAll(chats);
