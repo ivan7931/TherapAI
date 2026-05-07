@@ -7,6 +7,7 @@ public class ChatService {
         this.iaServer = iaServer;
     }
 
+    //Metodo para enviar un mensaje a la IA
     public String sendMessageToAI(String userMessage) {
         return iaServer.askGemini(userMessage);
     }

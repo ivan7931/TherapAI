@@ -19,8 +19,10 @@ public class FirebaseService {
     //metodo para inicializar firebase
     public static void inicializar() {
         try {
+            String rutaWin = "com\\therapai\\Firebase\\firebaseKey.json";
+            String ruta;
             //Cargamos el archivo de con la clave privada de nuestro proyecto(obtenida en la consola de firebase)
-            InputStream privateKey = FirebaseService.class.getClassLoader().getResourceAsStream("com\\therapai\\Firebase\\firebaseKey.json");
+            InputStream privateKey = FirebaseService.class.getClassLoader().getResourceAsStream("com/therapai/Firebase/firebaseKey.json");
 
             //Configuramos Firebase con las credenciales
             FirebaseOptions opciones = FirebaseOptions.builder().setCredentials(GoogleCredentials.fromStream(privateKey)).build();

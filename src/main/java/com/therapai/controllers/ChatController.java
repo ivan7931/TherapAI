@@ -2,6 +2,7 @@ package com.therapai.controllers;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.therapai.components.TypingBubble;
 import com.therapai.servicies.ChatService;
 import com.therapai.servicies.FirebaseService;
 import com.therapai.servicies.IAServer;
@@ -10,6 +11,7 @@ import com.therapai.utils.Sesion;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -69,35 +71,75 @@ public class ChatController {
      */
     @FXML
     public void sendMessage() {
-        //recuperamos el texto que ha escrito el usuario -> si vacio nada
+        // Recuperamos el texto que ha escrito el usuario -> si vacío nada
         String message = messageField1.getText().trim();
         if (message.isEmpty()) return;
 
-        //Si es la primera vez que se envia un mensaje -> creamos nuevo chat en firestore
+        // Si es la primera vez que se envía un mensaje -> creamos nuevo chat en Firestore
         crearChat();
 
-        //Se muestra el mensaje del usuario en la UI
+        // Se muestra el mensaje del usuario en la UI
         addMessageBox(message, true);
-        //guardamos el mensaje que envia el usuario en firestore
-        saveMessage(message,"user");
-        //limpiamos campos
+
+        // Guardamos el mensaje que envía el usuario en Firestore
+        saveMessage(message, "user");
+
+        // Limpiamos campo
         messageField1.clear();
 
-        //Se llama a la api de gemini para obtener respuestas
-        String aiResponse = chatService.sendMessageToAI(message);
-        System.out.println("Respuesta de la IA : " + aiResponse);
-        aiResponse = aiResponse.replace("\n", System.lineSeparator());
+        // Se muestra la animacion de los 3 puntos mientras que la IA piensa la respuesta
+        TypingBubble typingBubble = new TypingBubble();
+        messagesBox.getChildren().add(typingBubble);
 
-        //Si IA no responde-> mosntramos mensaje infomrando al usuario en la UI Y guardamos ese mensaje en firestore tambien
-        if(aiResponse==null || aiResponse.contains("Error") || aiResponse.contains("ERROR") ||aiResponse.contains("error")){
+        // Creamos una Task para que la UI no se bloquee mientras la IA piensa
+        Task<String> task = new Task<>() {
+            @Override
+            protected String call() {
+                return chatService.sendMessageToAI(message);
+            }
+        };
+
+        //Cuando la IA responde
+        task.setOnSucceeded(event -> {
+            String aiResponse = task.getValue();
+
+            // Quitar animación
+            messagesBox.getChildren().remove(typingBubble);
+            typingBubble.stop();
+
+            if (aiResponse == null ||
+                    aiResponse.contains("Error") ||
+                    aiResponse.contains("ERROR") ||
+                    aiResponse.contains("error")) {
+
+                addTypingMessage("El servicio de IA no está disponible.");
+                saveMessage("servicio de IA no disponible", "IA");
+                return;
+            }
+
+            aiResponse = aiResponse.replace("\n", System.lineSeparator());
+
+            // Mostrar respuesta con efecto typing
             addTypingMessage(aiResponse);
-            saveMessage("servicio de IA no disponible", "IA");
-            return;
-        }
-        //Hay respuesta de la IA , guardamos mensaje
-        addTypingMessage(aiResponse);
-        saveMessage(aiResponse, "IA");
-        //Falta comprobar que no sea sensitive
+
+            // Guardar mensaje de la IA
+            saveMessage(aiResponse, "IA");
+            if (esPrimerMensajeDelChat()) {
+                generarTituloAutomatico(message);
+            }
+        });
+
+        // Si falla la llamada
+        task.setOnFailed(event -> {
+            messagesBox.getChildren().remove(typingBubble);
+            typingBubble.stop();
+
+            addTypingMessage("Error al conectar con la IA.");
+            saveMessage("Error al conectar con la IA.", "IA");
+        });
+
+        //Ejecutamos el task en un hilo en segundo plano para que no se bloquee la UI
+        new Thread(task).start();
     }
 
     //Metodo para crear la caja donde se mostrara el mensaje en el chat.
@@ -225,6 +267,57 @@ public class ChatController {
                 .add(msg);
 
     }
+    //Metodo para comprobar si es el primer mensaje del chat
+    private boolean esPrimerMensajeDelChat() {
+        Firestore db = FirebaseService.getDb();
+        String uid = Sesion.getUserId();
+
+        try {
+            ApiFuture<QuerySnapshot> future = db.collection("users")
+                    .document(uid)
+                    .collection("chats")
+                    .document(chatId)
+                    .collection("messages")
+                    .get();
+
+            // Si solo hay 1 mensaje es el del usuario por lo tanto es el primer mensaje
+            return future.get().size() == 1;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    //Metodo para generar el titulo del chat automaticamente
+    private void generarTituloAutomatico(String primerMensaje) {
+
+        Task<String> task = new Task<>() {
+            @Override
+            protected String call() {
+                String prompt =
+                        "Genera un título muy corto (máximo 4 palabras), neutro, profesional y sin emociones " +
+                                "para resumir este mensaje. No incluyas detalles personales, no incluyas emociones, " +
+                                "no incluyas nombres propios. Solo devuelve el título:\n\n" + primerMensaje;
+                return chatService.sendMessageToAI(prompt);
+            }
+        };
+
+        task.setOnSucceeded(e -> {
+            String titulo = task.getValue();
+            if (titulo == null || titulo.isBlank()) return;
+
+            titulo = titulo.replace("\n", "").trim();
+
+            Firestore db = FirebaseService.getDb();
+            String uid = Sesion.getUserId();
+
+            db.collection("users")
+                    .document(uid)
+                    .collection("chats")
+                    .document(chatId)
+                    .update("title", titulo);
+        });
+        new Thread(task).start();
+    }
 
     /***
      * metodo para crear un nuvo chat en firestore si no existe chatID
@@ -250,14 +343,6 @@ public class ChatController {
     //pero con el metodo podemos mostrar un mensaje al user si eso ocurre o incluso si lo hace varias veces hacer algo distitno.
     private void detectSensitiveContent(String message) {
         boolean isSensitive = message.contains("ESO");
-    }
-
-    //Metodo para probar quer funciona correctamente
-    public void testUI() {
-        addMessageBox("Hola, soy un mensaje del usuario", true);
-        addMessageBox("Hola, soy un mensaje del bot aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", false);
-        addMessageBox("Este es un mensaje largo para comprobar que el wrap funciona correctamente y que la burbuja se adapta al tamaño del texto sin romper el diseño.", true);
-        addMessageBox("Perfecto, funciona genial", false);
     }
 
     //Efecto para mostrar mensajes en el chat poco a poco, solo es para los mensajes de la IA.
@@ -316,7 +401,7 @@ public class ChatController {
         });
 
         //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
-        chatService = new ChatService(new IAServer("AIzaSyAiCXmfgyJz0ujR4UoZBR0kMNitmmrS5Mo"));
+        chatService = new ChatService(new IAServer("AIzaSyDiYKSSbdSzAPNZE8HQR227CwN_QCiHsho"));
 
         //testUI();
     }

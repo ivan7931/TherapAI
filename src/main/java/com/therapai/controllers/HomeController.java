@@ -5,6 +5,7 @@ import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.Query;
 import com.google.cloud.firestore.QuerySnapshot;
+import com.therapai.components.ChatCell;
 import com.therapai.models.ConversationModel;
 import com.therapai.servicies.FirebaseService;
 import com.therapai.utils.SceneManager;
@@ -104,6 +105,25 @@ public class HomeController {
 
         chatController.loadChat(chatId);
     }
+    //Metodo para el boton de eliminar el chat
+    private void eliminarChat(ConversationModel chat) {
+        Firestore db = FirebaseService.getDb();
+        String uid = Sesion.getUserId();
+
+        db.collection("users")
+                .document(uid)
+                .collection("chats")
+                .document(chat.getChatId())
+                .delete();
+
+        chatList.getItems().remove(chat);
+    }
+
+    //Metodo para abrir el chat desde el Cell pulsando el chat
+    private void openChatFromCell(ConversationModel chat) {
+        ChatController controller = SceneManager.getInstance().switchToWithController("chat.fxml");
+        controller.loadChat(chat.getChatId());
+    }
 
     /***
      * Metodo para cargar la lisa de chats del usuario cuando se carga la pantalla home.fxml
@@ -111,6 +131,20 @@ public class HomeController {
     @FXML
     public void initialize() {
         System.out.println("HomeController initialized");
+        // 1. Si Firebase no está listo, evitamos NPE
+        if (FirebaseService.getDb() == null) {
+            System.err.println("⚠ Firebase no está inicializado todavía.");
+            return;
+        }
+        chatList.setStyle("-fx-background-color: #0F172A; -fx-control-inner-background: #0F172A;");
+
+        //Aplicar CellFactory personalizado
+        chatList.setCellFactory(list -> new ChatCell(
+                chat -> eliminarChat(chat),      // botón de borrar
+                chat -> openChatFromCell(chat)   // abrir chat al hacer clic
+        ));
+
+        //Cargar los chats del usuario
         cargarChats();
     }
 
