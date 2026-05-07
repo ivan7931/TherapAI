@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatController {
+    //variable para controlar uqe se la ia ha generado un titulo
+    private boolean tituloGenerado = false;
     //El @FXML debe llevarlo todo metodo o atributo que venga del fxml para que JavaFx lo detecte y los pueda conectar
     @FXML
     public VBox messagesBox;
@@ -67,6 +69,20 @@ public class ChatController {
     }
 
     /***
+     * metodo que coge los 15 primeros caracteres del mensaje del usuario
+     * y los asigna como titulo al chat en Firestore
+     */
+    private void generarTituloFallback(String message) {
+        String titulo;
+        if (message.length() > 15) {
+            titulo = message.substring(0, 15) + "[...]";
+        } else {
+            titulo = message;
+        }
+
+        updateTitle(titulo);
+    }
+    /***
      * Enviar mensaje y obtener respuesta de la IA
      */
     @FXML
@@ -78,11 +94,18 @@ public class ChatController {
         // Si es la primera vez que se envía un mensaje -> creamos nuevo chat en Firestore
         crearChat();
 
+
         // Se muestra el mensaje del usuario en la UI
         addMessageBox(message, true);
 
         // Guardamos el mensaje que envía el usuario en Firestore
         saveMessage(message, "user");
+
+        //si no se genera titulo con la ia
+        if (!tituloGenerado) {
+            generarTituloFallback(message);
+            tituloGenerado = true;
+        }
 
         // Limpiamos campo
         messageField1.clear();
@@ -91,7 +114,10 @@ public class ChatController {
         TypingBubble typingBubble = new TypingBubble();
         messagesBox.getChildren().add(typingBubble);
 
-        // Creamos una Task para que la UI no se bloquee mientras la IA piensa
+        // Creamos una Task para que la UI no se bloquee mientras la IA piensa//
+        /**
+         * task clase javafx oara ejecutar cosas pesadas en segundo plano sin congelar la ui
+         * */
         Task<String> task = new Task<>() {
             @Override
             protected String call() {
@@ -99,7 +125,7 @@ public class ChatController {
             }
         };
 
-        //Cuando la IA responde
+        //Cuando la IA responde(task -> temina ok)
         task.setOnSucceeded(event -> {
             String aiResponse = task.getValue();
 
@@ -114,6 +140,7 @@ public class ChatController {
 
                 addTypingMessage("El servicio de IA no está disponible.");
                 saveMessage("servicio de IA no disponible", "IA");
+                //generamos el titulo antes de retornar si la ia no dispnible
                 return;
             }
 
@@ -127,6 +154,7 @@ public class ChatController {
             if (esPrimerMensajeDelChat()) {
                 generarTituloAutomatico(message);
             }
+
         });
 
         // Si falla la llamada
@@ -303,20 +331,39 @@ public class ChatController {
 
         task.setOnSucceeded(e -> {
             String titulo = task.getValue();
-            if (titulo == null || titulo.isBlank()) return;
+            // Si la ia no puede generar mensaje se coge como titulo parte del primer mensaje del usuario
+            if (titulo == null || titulo.isBlank() || titulo.toLowerCase().contains("error")){
+                generarTituloFallback(primerMensaje);
+                return;
+            }
 
             titulo = titulo.replace("\n", "").trim();
+            updateTitle(titulo);
 
-            Firestore db = FirebaseService.getDb();
-            String uid = Sesion.getUserId();
-
-            db.collection("users")
-                    .document(uid)
-                    .collection("chats")
-                    .document(chatId)
-                    .update("title", titulo);
+            //en caso de fallar la tarea de generar el titulo del chat se guarda el contenido del primer mensaje como
+            //titulo
+            task.setOnFailed(event->{
+                generarTituloFallback(primerMensaje);
+            });
         });
         new Thread(task).start();
+    }
+
+    /***
+     * metodo para actualizar el titulo en FIrestore en el documento correspondiete
+     * pensado para evitar duplicar codigo
+     * @param titulo
+     */
+    private void updateTitle(String titulo) {
+
+        Firestore db = FirebaseService.getDb();
+        String uid = Sesion.getUserId();
+
+        db.collection("users")
+                .document(uid)
+                .collection("chats")
+                .document(chatId)
+                .update("title", titulo);
     }
 
     /***
@@ -333,7 +380,8 @@ public class ChatController {
         chatId = doc.getId();//asiganmos el id generado al caht actual
         //informacion del nuevo chat
         Map<String, Object> chat  = new HashMap<>();
-        chat.put("title", "Nueva conversacion");
+        //chat.put("title", "Nueva conversacion");
+        chat.put("title","");
         chat.put("createdAt", System.currentTimeMillis());
         //persistimo la informacion en firestore
         doc.set(chat);

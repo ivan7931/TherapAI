@@ -105,18 +105,53 @@ public class HomeController {
 
         chatController.loadChat(chatId);
     }
+
     //Metodo para el boton de eliminar el chat
     private void eliminarChat(ConversationModel chat) {
+        //instancia de la base de datos
         Firestore db = FirebaseService.getDb();
-        String uid = Sesion.getUserId();
+        //obtenemos el localId del usuario acctual
+        String userId = Sesion.getUserId();
+        //ejecutamos en segundo planopara no bloquear la ui
+        new Thread(()->{
+            try{
+                //recuperamos los mensajes del chat recorriendo las colecciones hasta llegar a mensajes
+                ApiFuture<QuerySnapshot> future = db.collection("users")
+                        .document(userId)
+                        .collection("chats")
+                        .document(chat.getChatId())
+                        .collection("messages")
+                        .get();
+                QuerySnapshot querySnapshot = future.get();
 
-        db.collection("users")
-                .document(uid)
-                .collection("chats")
-                .document(chat.getChatId())
-                .delete();
+                //Borramos cada uno de los mensajes del chat elegido
+                for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                    db.collection("users")
+                            .document(userId)
+                            .collection("chats")
+                            .document(chat.getChatId())
+                            .collection("messages")
+                            .document(documentSnapshot.getId())
+                            .delete();
+                }
+                //Una vez borrados todos los mensajes del chat borramos el documento del chat actual de Firestore
+                //Hacemos esto porque cuando eliminaos un documento en firestore no se elimnian los hijos en
+                //cascada y los mensajes quedarian oersistidos en firestore pero huerfanos y el borrado del cha tno se ejecutaria
+                db.collection("users")
+                        .document(userId)
+                        .collection("chats")
+                        .document(chat.getChatId())
+                        .delete();
 
-        chatList.getItems().remove(chat);
+                //Actualizamos la ui
+                Platform.runLater(()->{
+                    chatList.getItems().remove(chat);
+                });
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     //Metodo para abrir el chat desde el Cell pulsando el chat
