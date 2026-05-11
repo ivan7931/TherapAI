@@ -1,16 +1,240 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.ProfileController">
-   <center>
-      <AnchorPane prefHeight="400.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" style="-fx-background-color: #0A0F1F;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.ProfileController">
+   <top>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" style="-fx-background-color: #111A2E;" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="logoutButton" layoutX="400.0" layoutY="462.0" mnemonicParsing="false" onAction="#logOut" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: #4DA3FF; -fx-background-radius: 6; -fx-text-fill: #0A0F1F;" text="Cerrar sesión" />
+            <ImageView fitHeight="100.0" fitWidth="100.0" onMouseClicked="#goHome" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/LogoSinLetra.png" />
+               </image>
+            </ImageView>
+            <Label prefHeight="40.0" prefWidth="134.0" text="TherapAI" textFill="#4da3ff">
+               <font>
+                  <Font size="25.0" />
+               </font>
+               <HBox.margin>
+                  <Insets right="150.0" />
+               </HBox.margin>
+            </Label>
+            <Label layoutX="285.0" layoutY="40.0" prefHeight="40.0" prefWidth="134.0" text="Perfil" textAlignment="CENTER" textFill="#4da3ff">
+               <font>
+                  <Font size="25.0" />
+               </font>
+            </Label>
+            <Region prefHeight="100.0" prefWidth="335.0" />
          </children>
-      </AnchorPane>
+      </HBox>
+   </top>
+   <center>
+      <ScrollPane fitToWidth="true" hbarPolicy="NEVER" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: transparent; -fx-background: transparent;" vbarPolicy="NEVER" BorderPane.alignment="CENTER">
+         <content>
+            <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-padding: 20px;">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0">
+                     <children>
+                        <Label fx:id="nameLabel" style="-fx-text-fill: #E6F0FF;" text="Nombre">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="emailLabel" style="-fx-text-fill: #9AA4B2;" text="Email">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Label style="-fx-text-fill: #9AA4B2;" text="Informacion de la cuenta">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #161B22; -fx-background-radius: 10px; -fx-padding: 15px; -fx-spacing: 10px;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="56.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/EditIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Editar nombre" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Region prefHeight="200.0" prefWidth="200.0" />
+                              <ImageView fitHeight="55.0" fitWidth="56.0" onMouseClicked="#editName" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="50.0" fitWidth="88.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/PasswordIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Cambiar contraseña">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Region prefHeight="55.0" prefWidth="166.0" />
+                              <ImageView fitHeight="55.0" fitWidth="56.0" onMouseClicked="#changePassword" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="54.0" fitWidth="62.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/EmailIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Cambiar email">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Region prefHeight="55.0" prefWidth="202.0" />
+                              <ImageView fitHeight="55.0" fitWidth="56.0" onMouseClicked="#changeEmail" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Label style="-fx-text-fill: #9AA4B2;" text="Preferencias">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <VBox prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #161B22; -fx-background-radius: 10px; -fx-padding: 15px; -fx-spacing: 10px;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="50.0" fitWidth="76.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/SubIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Administrar subscripción">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Region prefHeight="60.0" prefWidth="131.0" />
+                              <ImageView fitHeight="50.0" fitWidth="56.0" onMouseClicked="#manageSubscription" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Label layoutX="409.0" layoutY="355.0" style="-fx-text-fill: #9AA4B2;" text="Privacidad">
+                     <font>
+                        <Font size="17.0" />
+                     </font>
+                  </Label>
+                  <VBox layoutX="30.0" layoutY="389.0" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #161B22; -fx-background-radius: 10px; -fx-padding: 15px; -fx-spacing: 10px;">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="58.0" fitWidth="60.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/DelIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Borrar datos">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                              </Label>
+                              <Region prefHeight="200.0" prefWidth="200.0" />
+                              <ImageView fitHeight="52.0" fitWidth="49.0" onMouseClicked="#deleteData" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" layoutX="25.0" layoutY="25.0" prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <ImageView fitHeight="54.0" fitWidth="61.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ContactIcon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Contacta con nosotros">
+                                 <padding>
+                                    <Insets left="10.0" />
+                                 </padding>
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                              <Region prefHeight="50.0" prefWidth="149.0" />
+                              <ImageView fitHeight="53.0" fitWidth="50.0" onMouseClicked="#contactUs" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/ArrowIcon.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
    </center>
+   <bottom>
+      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: transparent;" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#logOut" prefHeight="33.0" prefWidth="102.0" style="-fx-background-color: #4DA3FF; -fx-background-radius: 6; -fx-text-fill: #0A0F1F;" text="Cerrar sesión" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+         </padding>
+      </HBox>
+   </bottom>
 </BorderPane>

@@ -25,4 +25,12 @@ public class UserModel {
     public String getName() {
         return name;
     }
+
+    public void setName(String nuevoNombre) {
+        this.name = nuevoNombre;
+    }
+
+    public void setEmail(String nuevoEmail) {
+        this.email = nuevoEmail;
+    }
 }

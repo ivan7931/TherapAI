@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" prefHeight="238.0" prefWidth="329.0" spacing="15" style="-fx-background-color: #161B22;              -fx-padding: 20;              -fx-background-radius: 10;              -fx-border-color: #4DA3FF;              -fx-border-width: 2;              -fx-border-radius: 10;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.therapai.controllers.PopupConfirmController">
+
+    <children>
+
+        <!-- Título del popup -->
+        <Label fx:id="titleLabel" style="-fx-text-fill: #E6F0FF; -fx-font-size: 18px; -fx-font-weight: bold;" />
+
+        <!-- Mensaje de confirmación -->
+        <Label fx:id="messageLabel" maxWidth="250" style="-fx-text-fill: #9AA4B2; -fx-font-size: 14px;" wrapText="true" />
+
+        <!-- Botones -->
+        <HBox alignment="CENTER" spacing="10">
+            <children>
+
+                <Button fx:id="cancelButton" style="-fx-background-color: transparent;                                -fx-text-fill: #9AA4B2;                                -fx-border-color: #9AA4B2;                                -fx-border-radius: 6;                                -fx-background-radius: 6;" text="Cancelar" />
+
+                <Button fx:id="confirmButton" style="-fx-background-color: #FF6B6B;                                -fx-text-fill: white;                                -fx-background-radius: 6;" text="Confirmar" />
+
+            </children>
+        </HBox>
+
+    </children>
+
+</VBox>

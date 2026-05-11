@@ -58,25 +58,7 @@
                   <Font size="25.0" />
                </font>
             </Label>
-            <Region prefHeight="150.0" prefWidth="287.0" />
-            <Button mnemonicParsing="false" onAction="#goHistory" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
-               <graphic>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goHistory" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/HistoryIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
-            <Button mnemonicParsing="false" onAction="#goSettings" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
-               <graphic>
-                  <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goSettings" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/SettingsIcon.png" />
-                     </image>
-                  </ImageView>
-               </graphic>
-            </Button>
+            <Region prefHeight="100.0" prefWidth="495.0" />
             <Button mnemonicParsing="false" onAction="#goProfile" style="-fx-background-color: #111A2E; -fx-text-fill: #0A0F1F; -fx-background-radius: 10;">
                <graphic>
                   <ImageView fitHeight="50.0" fitWidth="50.0" onMouseClicked="#goProfile" pickOnBounds="true" preserveRatio="true">
