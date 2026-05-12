@@ -10,7 +10,7 @@ import java.net.URL;
 public class IAServer {
     private final String apiKey;
     //URL del modelo de IA
-    private final String endPoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent?key=";
+    private final String endPoint = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent?key=";
     private static final String THERAPAI_PROMPT = """
                 Eres TherapAI, un asistente de apoyo emocional.
                 Tu objetivo es ayudar al usuario a explorar sus emociones con empatía y sin juicios.
@@ -50,7 +50,7 @@ public class IAServer {
                     {
                       "contents": [
                         {
-                          "role": "system",
+                          "role": "model",
                           "parts": [
                             { "text": "%s" }
                           ]

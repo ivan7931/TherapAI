@@ -112,8 +112,10 @@ public class ChatController {
 
         // Se muestra la animacion de los 3 puntos mientras que la IA piensa la respuesta
         TypingBubble typingBubble = new TypingBubble();
-        messagesBox.getChildren().add(typingBubble);
 
+        Platform.runLater(() -> {
+            messagesBox.getChildren().add(typingBubble);
+        });
         // Creamos una Task para que la UI no se bloquee mientras la IA piensa//
         /**
          * task clase javafx oara ejecutar cosas pesadas en segundo plano sin congelar la ui
@@ -449,7 +451,7 @@ public class ChatController {
         });
 
         //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
-        chatService = new ChatService(new IAServer("AIzaSyDiYKSSbdSzAPNZE8HQR227CwN_QCiHsho"));
+        chatService = new ChatService(new IAServer("AIzaSyDYctgaQMOy-zwNaQuUayejPsIfpINMgRQ"));
 
         //testUI();
     }

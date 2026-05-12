@@ -14,7 +14,7 @@ public class TypingBubble extends HBox {
     private final Timeline timeline;
 
     public TypingBubble() {
-        this.setStyle("-fx-background-color: #444444; -fx-padding: 8 12; -fx-background-radius: 12;");
+        this.setStyle("-fx-background-color: #1E293B; -fx-padding: 8 12; -fx-background-radius: 12;");
         dots.setStyle("-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;");
 
         this.setAlignment(Pos.CENTER_LEFT);
