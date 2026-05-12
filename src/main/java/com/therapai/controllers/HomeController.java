@@ -183,6 +183,11 @@ public class HomeController {
         cargarChats();
     }
 
+    /***
+     * metodo para eliminar chats en firestore
+     *
+     */
+
     //Los metodos go son para cambiar a esa pantalla.
     @FXML
     public void goHome() {

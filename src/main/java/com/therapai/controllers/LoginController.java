@@ -141,8 +141,9 @@ public class LoginController {
                         if (response.isSuccessful()) {
                             String email = obj.getString("email");
                             String id = obj.getString("localId");
+                            String idToken = obj.getString("idToken");
                             System.out.println("LOGIN OK: " + res);
-                            UserModel currentUser = new UserModel(id,email,null);
+                            UserModel currentUser = new UserModel(id,email,null,idToken);
                             Sesion.setUsuario_actual(currentUser);
                             System.out.println(Sesion.getUserId());
                             goHome();

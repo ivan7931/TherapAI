@@ -24,4 +24,10 @@ public class Sesion {
         }
         return usuario_actual.getUid();
     }
+    public static String getIdToken(){
+        if (usuario_actual == null) {
+            throw new NullPointerException("usuario_actual is null");
+        }
+        return usuario_actual.getIdToken();
+    }
 }

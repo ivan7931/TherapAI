@@ -6,12 +6,17 @@ public class UserModel {
     private String name;
     //La contraseña no se guarda ya que FireStore la gestiona y codifica.
 
+    //ñadimos un atributo para guardar el idToken de la sesion y poder hacer llamadas a la api
+    //de firebase para poder hacer el cambio de contraseña, emailp
+    private String idToken;
+
     public UserModel(){}
 
-    public UserModel(String uid, String email, String name){
+    public UserModel(String uid, String email, String name,String idToken) {
         this.uid = uid;
         this.email = email;
         this.name = name;
+        this.idToken = idToken;
     }
 
     public String getUid() {
@@ -32,5 +37,14 @@ public class UserModel {
 
     public void setEmail(String nuevoEmail) {
         this.email = nuevoEmail;
+    }
+
+    //getter settr idToken
+
+    public String getIdToken() {
+        return idToken;
+    }
+    public void setIdToken(String idToken) {
+        this.idToken = idToken;
     }
 }

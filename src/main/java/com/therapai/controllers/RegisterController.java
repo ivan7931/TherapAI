@@ -119,8 +119,10 @@ public class RegisterController {
                            //obtenemos los datos devueltos por firebase
                            String uid = objRespuesta.getString("localId");
                            String emailRespuesta = objRespuesta.getString("email");
+                           //actualizamos usesrmodel para guradar el usuario en memoria
+                           String idToken = objRespuesta.getString("idToken");
                            System.out.println("registro correcto->"+res);
-                           UserModel userOK = new UserModel(uid, emailRespuesta,name);
+                           UserModel userOK = new UserModel(uid, emailRespuesta,name,idToken);
                            //Obtenemos la instancia de Firestore
                            Firestore db = FirebaseService.getDb();
                            //Hemos optado por usar un map como que represente el documento
