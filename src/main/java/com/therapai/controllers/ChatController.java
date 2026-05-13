@@ -101,11 +101,6 @@ public class ChatController {
         // Guardamos el mensaje que envía el usuario en Firestore
         saveMessage(message, "user");
 
-        //si no se genera titulo con la ia
-        if (!tituloGenerado) {
-            generarTituloFallback(message);
-            tituloGenerado = true;
-        }
 
         // Limpiamos campo
         messageField1.clear();
@@ -151,11 +146,12 @@ public class ChatController {
             // Mostrar respuesta con efecto typing
             addTypingMessage(aiResponse);
 
-            // Guardar mensaje de la IA
-            saveMessage(aiResponse, "IA");
             if (esPrimerMensajeDelChat()) {
                 generarTituloAutomatico(message);
             }
+            // Guardar mensaje de la IA
+            saveMessage(aiResponse, "IA");
+
 
         });
 
@@ -344,9 +340,10 @@ public class ChatController {
 
             //en caso de fallar la tarea de generar el titulo del chat se guarda el contenido del primer mensaje como
             //titulo
-            task.setOnFailed(event->{
-                generarTituloFallback(primerMensaje);
-            });
+
+        });
+        task.setOnFailed(event->{
+            generarTituloFallback(primerMensaje);
         });
         new Thread(task).start();
     }
@@ -451,7 +448,7 @@ public class ChatController {
         });
 
         //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
-        chatService = new ChatService(new IAServer("AIzaSyDYctgaQMOy-zwNaQuUayejPsIfpINMgRQ"));
+        chatService = new ChatService(new IAServer("AIzaSyDe_rQvlkc3VwSoGTxiTOIP6NUZRSDcUao"));
 
         //testUI();
     }
