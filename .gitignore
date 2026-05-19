@@ -40,3 +40,6 @@ build/
 
 ### FIRESTORE KEY ###
 /src/main/resources/com/therapai/Firebase/firebaseKey.json
+
+### GEMINI API KEY ###
+config.properties

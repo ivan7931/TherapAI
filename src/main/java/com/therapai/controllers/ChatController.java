@@ -26,8 +26,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class ChatController {
     //variable para controlar uqe se la ia ha generado un titulo
@@ -448,7 +451,16 @@ public class ChatController {
         });
 
         //La APIKey habra que cambiarlo lo mas seguro, se queda sin tokens.
-        chatService = new ChatService(new IAServer("AIzaSyDe_rQvlkc3VwSoGTxiTOIP6NUZRSDcUao"));
+        //1
+        //chatService = new ChatService(new IAServer(""));
+        Properties props = new Properties();
+        try {
+            props.load(new FileInputStream("config.properties"));
+            String apiKey = props.getProperty("GEMINI_API_KEY");
+            chatService = new ChatService(new IAServer(apiKey));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //testUI();
     }
