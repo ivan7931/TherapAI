@@ -13,16 +13,19 @@ import javafx.scene.control.TextField;
 import okhttp3.*;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 
 public class RegisterController {
 
 
     //firebase login/register api key-> necesaria para autenticar la peticion
-    private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+    //private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+    String API_KEY_FIREBASE="";
 
     //variables para guardar los datos introducidos por el usuario en la aplicaicon
     @FXML private TextField fullName;
@@ -70,6 +73,14 @@ public class RegisterController {
         //Creamos el cliente http que se va a encargar de realizar la petidcion
         OkHttpClient client = new OkHttpClient();
         //ur -> contiene la url de la api firebase junto con neustra api key
+        //recuperamos la api key de firebase del archivo conf
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("config.properties"));
+            API_KEY_FIREBASE = prop.getProperty("FIREBASE_API_KEY");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String url = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=" + API_KEY_FIREBASE;
         //crear json que enviamos en la peticion
         JSONObject objPeticion = new JSONObject();

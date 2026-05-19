@@ -8,10 +8,14 @@ import javafx.scene.control.*;
 import okhttp3.*;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Properties;
 
 
 public class LoginController {
+    //private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+    String API_KEY_FIREBASE="";
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
@@ -22,7 +26,7 @@ public class LoginController {
     public void goHome() {
         SceneManager.getInstance().switchTo("home.fxml");
     }
-    private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+
     @FXML
     public void login() {
         //Texto que el usuario ha introducido en los campos email/password
@@ -41,6 +45,13 @@ public class LoginController {
         Envia email+password a Firebase --> Firebase responde para saber si existe ususario y contraseña ok
         url_login--> definicion del endpoint de firebase + api key para identificar proyecto
         * */
+        Properties prop = new Properties();
+        try {
+            prop.load(new FileInputStream("config.properties"));
+            API_KEY_FIREBASE = prop.getProperty("FIREBASE_API_KEY");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         String url_login = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key="+API_KEY_FIREBASE;
         /*
         Json que enviamos a firebase

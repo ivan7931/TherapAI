@@ -23,15 +23,18 @@ import javafx.stage.StageStyle;
 import okhttp3.*;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 
 public class ProfileController {
     //api key firebase
-    private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+    //private final String API_KEY_FIREBASE = "AIzaSyAWyyMF2sEyucztZAZU9FQOCL_YeQnyMXY";
+    String API_KEY_FIREBASE="";
     @FXML
     private Button logoutButton;
     @FXML
@@ -183,6 +186,14 @@ public class ProfileController {
             //Creamos el cliente http que se va a encargar de realizar la petidcion
             OkHttpClient client = new OkHttpClient();
             //ur -> contiene la url de la api firebase junto con neustra api key
+            //RECUPERAMOS LA API KEY DE FIREBASE
+            Properties prop = new Properties();
+            try {
+                prop.load(new FileInputStream("config.properties"));
+                API_KEY_FIREBASE = prop.getProperty("FIREBASE_API_KEY");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             String url = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + API_KEY_FIREBASE;
             //crear json que enviamos en la peticion
             JSONObject objPeticion = new JSONObject();
@@ -303,6 +314,14 @@ public class ProfileController {
             //Creamos el cliente http que se va a encargar de realizar la petidcion
             OkHttpClient client = new OkHttpClient();
             //ur -> contiene la url de la api firebase junto con neustra api key
+            //RECUPERAMOS API KEY DE FIREBASE DE CONF
+            Properties prop = new Properties();
+            try {
+                prop.load(new FileInputStream("config.properties"));
+                API_KEY_FIREBASE = prop.getProperty("FIREBASE_API_KEY");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             String url = "https://identitytoolkit.googleapis.com/v1/accounts:update?key=" + API_KEY_FIREBASE;
             //crear json que enviamos en la peticion
             JSONObject objPeticion = new JSONObject();
@@ -460,6 +479,13 @@ public class ProfileController {
 
             OkHttpClient client = new OkHttpClient();
             //url api para borrar cuenta de firebase auth
+            Properties prop = new Properties();
+            try {
+                prop.load(new FileInputStream("config.properties"));
+                API_KEY_FIREBASE = prop.getProperty("FIREBASE_API_KEY");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             String url = "https://identitytoolkit.googleapis.com/v1/accounts:delete?key=" + API_KEY_FIREBASE;
             JSONObject json = new JSONObject();
             json.put(
