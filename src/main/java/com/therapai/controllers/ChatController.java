@@ -28,6 +28,7 @@ import javafx.util.Duration;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -145,6 +146,8 @@ public class ChatController {
             }
 
             aiResponse = aiResponse.replace("\n", System.lineSeparator());
+            //linea para correcta codificacion
+            aiResponse = new String(aiResponse.getBytes(), StandardCharsets.UTF_8);
 
             // Mostrar respuesta con efecto typing
             addTypingMessage(aiResponse);
@@ -339,6 +342,8 @@ public class ChatController {
             }
 
             titulo = titulo.replace("\n", "").trim();
+            //correcta codificacion de caracteres
+            titulo = new String(titulo.getBytes(),StandardCharsets.UTF_8);
             updateTitle(titulo);
 
             //en caso de fallar la tarea de generar el titulo del chat se guarda el contenido del primer mensaje como
