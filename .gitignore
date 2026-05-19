@@ -37,3 +37,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### FIRESTORE KEY ###
+/src/main/resources/com/therapai/Firebase/firebaseKey.json
